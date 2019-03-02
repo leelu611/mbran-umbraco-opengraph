@@ -8,30 +8,21 @@ using Umbraco.Core.PropertyEditors;
 
 namespace MBran.OpenGraph
 {
-    [PropertyValueType(typeof(IEnumerable<OpenGraphMetaData>))]
-    [PropertyValueCache(PropertyCacheValue.All, PropertyCacheLevel.Content)]
-    public class OpenGraphValueConverter : IPropertyValueConverter
+    public class OpenGraphValueConverter : PropertyValueConverterBase
     {
-        public bool IsConverter(PublishedPropertyType propertyType)
-        {
-            return propertyType.PropertyEditorAlias.Equals("MBran.OpenGraph",
-                StringComparison.InvariantCultureIgnoreCase);
-        }
+        private const string Alias = "MBran.OpenGraph";
 
-        public object ConvertDataToSource(PublishedPropertyType propertyType, object source, bool preview)
-        {
-            return Convert.ToString(source);
-        }
+        public override bool IsConverter(PublishedPropertyType propertyType) => Alias.Equals(propertyType.EditorAlias);
+        public override PropertyCacheLevel GetPropertyCacheLevel(PublishedPropertyType propertyType) => PropertyCacheLevel.Snapshot;
 
-        public object ConvertSourceToObject(PublishedPropertyType propertyType, object source, bool preview)
+        public override object ConvertSourceToIntermediate(IPublishedElement owner, PublishedPropertyType propertyType, object source, bool preview) => source?.ToString();
+
+        public override object ConvertIntermediateToObject(IPublishedElement owner, PublishedPropertyType propertyType,
+            PropertyCacheLevel referenceCacheLevel, object inter, bool preview)
         {
-            var opengraph = JsonConvert.DeserializeObject<Models.OpenGraph>(source as string);
+            var opengraph = JsonConvert.DeserializeObject<Models.OpenGraph>(inter.ToString());
             return opengraph == null ? new List<OpenGraphMetaData>() : opengraph.ToList();
-        }
 
-        public object ConvertSourceToXPath(PublishedPropertyType propertyType, object source, bool preview)
-        {
-            throw new NotImplementedException();
         }
     }
 }

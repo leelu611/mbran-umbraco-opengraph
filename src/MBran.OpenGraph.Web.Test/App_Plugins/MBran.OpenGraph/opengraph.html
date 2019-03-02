@@ -1,0 +1,124 @@
+﻿<div class="umb-property mbran-opengraph" ng-controller="MBran.OpenGraph.OpenGraphController">
+    <div class="umb-property ng-scope">
+        <div class="control-group umb-control-group">
+            <div class="umb-el-wrap">
+                <label class="control-label ng-binding" title="image">og:Image</label>
+                <div class="controls">
+                    <div class="umb-property-editor">
+                        <div class="umb-editor umb-mediapicker">
+                            <div class="flex error">
+                                <div ng-show="thumbnail.src != ''">
+                                    <umb-image-thumbnail width="{{thumbnail.width}}"
+                                                         height="{{thumbnail.height}}"
+                                                         src="thumbnail.src"
+                                                         max-size="120" />
+                                    <a class="umb-sortable-thumbnails__action" href="" ng-click="removeImage()">
+                                        <i class="icon icon-delete red"></i>
+                                        <localize key="general_delete" class="ng-isolate-scope ng-scope">Remove</localize>
+                                    </a>
+                                </div>
+                                <a href="#" class="add-link ng-scope add-link-square" ng-show="thumbnail.src == ''" ng-click="pickImage()" prevent-default="">
+                                    <i class="icon icon-add large"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="umb-property ng-scope">
+        <div class="control-group umb-control-group">
+            <div class="umb-el-wrap">
+                <label class="control-label">og:Title</label>
+                <div class="controls">
+                    <div class="umb-property-editor ng-scope">
+                        <input type="text" name="textbox" ng-model="model.value.title"
+                               class="umb-editor umb-textstring textstring"
+                               val-server="title"
+                               ng-trim="false" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="umb-property ng-scope">
+        <div class="control-group umb-control-group">
+            <div class="umb-el-wrap">
+                <label class="control-label">og:Type</label>
+                <div class="controls">
+                    <div class="umb-property-editor ng-scope">
+                        <select name="dropDownList"
+                                class="umb-editor umb-dropdown"
+                                ng-model="model.value.type"
+                                ng-options="key as value for (key , value) in opengraph.types">
+                            <option></option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="umb-property ng-scope">
+        <div class="control-group umb-control-group">
+            <div class="umb-el-wrap">
+                <label class="control-label">og:Description</label>
+                <div class="controls">
+                    <div class="umb-property-editor">
+                        <textarea ng-model="model.value.description" name="textarea" rows="10" class="umb-editor umb-textarea textstring">
+                        </textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="umb-property ng-scope">
+        <div class="control-group umb-control-group">
+            <div class="umb-el-wrap">
+                <label class="control-label">og:Metadata</label>
+                <div class="controls">
+                    <div class="umb-property-editor ng-scope">
+                        <div class="add-metadata">
+                            <input type="text" ng-model="metadata.key" placeholder="metadata key" />
+                            <input type="text" ng-model="metadata.value" placeholder="metadata value" />
+                            <a class="btn" href="#" ng-click="addMetadata()" prevent-default="">
+                                <localize key="general_add">Add</localize>
+                            </a>
+                        </div>
+                        <div class="list-metadata">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            Key
+                                        </th>
+                                        <th>
+                                            Value
+                                        </th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="item in model.value.metadata track by $index">
+                                        <td>
+                                            {{item.key}}
+                                        </td>
+                                        <td>
+                                            {{item.value}}
+                                        </td>
+                                        <td>
+                                            <a href="#" ng-click="removeMetadata($index)" prevent-default="">
+                                                <i class="icon icon-delete red"></i>
+                                                <localize key="general_delete" class="ng-isolate-scope ng-scope">Remove</localize>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

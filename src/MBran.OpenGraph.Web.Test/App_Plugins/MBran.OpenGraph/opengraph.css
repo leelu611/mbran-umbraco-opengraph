@@ -1,0 +1,15 @@
+﻿.mbran-opengraph .list-metadata {
+    margin: 25px 0 0 0;
+}
+
+.mbran-opengraph .list-metadata table th:first-child{
+    width: 200px;
+}
+
+.mbran-opengraph .list-metadata table th:last-child {
+    width: 75px;
+}
+
+.mbran-opengraph li {
+    list-style-type: none;
+}

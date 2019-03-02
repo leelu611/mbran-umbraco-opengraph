@@ -7,8 +7,9 @@ using System.Web.Mvc;
 using MBran.OpenGraph.Models;
 using Newtonsoft.Json;
 using Umbraco.Core;
-using Umbraco.Core.Models;
+using Umbraco.Core.Models.PublishedContent;
 using Umbraco.Web;
+using Composing = Umbraco.Web.Composing;
 
 namespace MBran.OpenGraph.Extensions
 {
@@ -32,28 +33,25 @@ namespace MBran.OpenGraph.Extensions
         {
             var curPage = GetCurrentPage();
             var cacheName = string.Join("_", nameof(HtmlHelperExtensions), nameof(OpenGraph),
-                curPage.DocumentTypeAlias);
+               curPage.ContentType.Alias);
 
-            var currentCachedPropertyName = (string) ApplicationContext.Current
-                .ApplicationCache
+            var currentCachedPropertyName = (string) Composing.Current.AppCaches
                 .RuntimeCache
-                .GetCacheItem(cacheName);
+                .Get(cacheName);
 
             //clear if there is previous cache but property is gone
             if (!string.IsNullOrWhiteSpace(currentCachedPropertyName) &&
                 !curPage.HasProperty(currentCachedPropertyName))
-                ApplicationContext.Current
-                    .ApplicationCache
+                Composing.Current.AppCaches
                     .RuntimeCache
-                    .ClearCacheItem(cacheName);
+                    .Clear(cacheName);
 
             //retry if no cache available or if previous cached property does not exist
             if (string.IsNullOrWhiteSpace(currentCachedPropertyName)
                 || !curPage.HasProperty(currentCachedPropertyName))
-                currentCachedPropertyName = (string) ApplicationContext.Current
-                    .ApplicationCache
+                currentCachedPropertyName = (string)Composing.Current.AppCaches
                     .RuntimeCache
-                    .GetCacheItem(cacheName, () => GetPropertyName(curPage));
+                    .Get(cacheName, () => GetPropertyName(curPage));
 
             return helper.OpenGraph(curPage, currentCachedPropertyName, defaultMetadata);
         }
@@ -71,7 +69,7 @@ namespace MBran.OpenGraph.Extensions
             IEnumerable<dynamic> defaultMetadata = null)
         {
             var metaData = !string.IsNullOrWhiteSpace(propertyName) && content.HasProperty(propertyName)
-                ? content.GetPropertyValue<List<OpenGraphMetaData>>(propertyName)
+                ? (List<OpenGraphMetaData>)content.GetProperty(propertyName).GetValue()
                 : new List<OpenGraphMetaData>();
 
             var defaultMeta = defaultMetadata
@@ -94,14 +92,13 @@ namespace MBran.OpenGraph.Extensions
         private static string GetPropertyName(IPublishedContent content)
         {
             return content.Properties
-                .FirstOrDefault(p => p.GetValue<List<OpenGraphMetaData>>() != null)
-                ?.PropertyTypeAlias;
+                .FirstOrDefault(p => (List<OpenGraphMetaData>)p.GetValue() != null)
+                ?.Alias;
         }
 
         private static IPublishedContent GetCurrentPage()
         {
-            var umbHelper = new UmbracoHelper(UmbracoContext.Current);
-            return umbHelper.UmbracoContext.PublishedContentRequest.PublishedContent;
+            return Composing.Current.UmbracoContext.PublishedRequest.PublishedContent;
         }
     }
 }

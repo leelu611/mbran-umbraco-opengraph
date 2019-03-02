@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using MBran.OpenGraph.Models;
 using Umbraco.Web;
+using Composing = Umbraco.Web.Composing;
 
 namespace MBran.OpenGraph.Extensions
 {
@@ -8,18 +9,17 @@ namespace MBran.OpenGraph.Extensions
     {
         public static IEnumerable<OpenGraphMetaData> ToList(this Models.OpenGraph opengraph)
         {
-            var umbHelper = new UmbracoHelper(UmbracoContext.Current);
             var model = new List<OpenGraphMetaData>();
 
             if (opengraph == null) return model;
 
             if (opengraph.ImageId != null)
             {
-                var media = umbHelper.Media(opengraph.ImageId);
+                var media = Composing.Current.UmbracoHelper.Media(opengraph.ImageId);
                 var mediaUrl = media.Url;
                 if (!string.IsNullOrEmpty(mediaUrl))
                 {
-                    var url = UmbracoContext.Current
+                    var url = Composing.Current.UmbracoContext
                         .HttpContext.Request.Url?.AbsoluteUri
                         .TrimEnd('/');
                     model.Add(new OpenGraphMetaData

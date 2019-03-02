@@ -1,0 +1,11 @@
+﻿{
+  propertyEditors: [
+    {
+      alias: 'MBran.OpenGraph',
+      name: 'Open Graph',
+      editor: { view: '~/App_Plugins/MBran.OpenGraph/opengraph.html' }
+    }
+  ],
+  javascript:	['~/App_Plugins/MBran.OpenGraph/opengraph.controller.js'],
+  css:			['~/App_Plugins/MBran.OpenGraph/opengraph.css']
+}
